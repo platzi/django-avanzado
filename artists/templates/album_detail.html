@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ object.title }}</h1>
+    <div class="pure-g">
+        <div class="pure-u-1-2">
+            <figure>
+                <img src="/media/{{ object.cover }}" alt="{{ object.title }}" width="350" />
+                <figcaption>{{ object.artist.nickname }}</figcaption>
+            </figure>
+        </div>
+        <div class="pure-u-1-2">
+            <ul>
+                {% for track in object.track_set.all %}
+                    <li style="list-style-type: none;">{{ track }}</li>
+                {% empty %}
+                    <div>No hay tracks todavía.</div>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
