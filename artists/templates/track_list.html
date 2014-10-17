@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Top Tracks!!</h1>
+    <div>
+        <ul>
+            {% for track in object_list %}
+                <li>{{ track.title }}: {{ track.listen }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock content %}

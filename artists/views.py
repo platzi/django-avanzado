@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.views.generic import ListView, DetailView
-from artists.models import Album
+from artists.models import Album, Track
+from userprofiles.mixins import LoginRequiredMixin
 
 
 class JsonResponseMixin(object):
@@ -18,7 +19,7 @@ class JsonResponseMixin(object):
         return JsonResponse(data, safe=False)
 
 
-class AlbumListView(JsonResponseMixin, ListView):
+class AlbumListView(LoginRequiredMixin, JsonResponseMixin, ListView):
     model = Album
     template_name = 'album_list.html'
     paginate_by = 2
@@ -53,7 +54,7 @@ class AlbumListView(JsonResponseMixin, ListView):
         return queryset
 
 
-class AlbumDetailView(JsonResponseMixin, DetailView):
+class AlbumDetailView(LoginRequiredMixin, JsonResponseMixin, DetailView):
     model = Album
     template_name = 'album_detail.html'
     # slug_url_kwarg = 'djangoavanzado'
@@ -75,3 +76,8 @@ class AlbumDetailView(JsonResponseMixin, DetailView):
         }
 
         return data
+
+
+class TopTrackListView(ListView):
+    queryset = Track.objects.top().filter(album__artist__slug='daft-punk')
+    template_name = 'track_list.html'

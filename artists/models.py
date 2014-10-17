@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import QuerySet
 from django.utils.text import slugify
 
 
@@ -38,11 +39,16 @@ class Album(SlugMixin, models.Model):
     artist = models.ForeignKey(Artist)
 
     def __str__(self):
-        return self.title
+        return self.slug
     
     def save(self, *args, **kwargs):
         self.slug = self.get_slug(self.title, Album)
         super(Album, self).save(*args, **kwargs)
+
+
+class TrackQuerySet(QuerySet):
+    def top(self):
+        return self.order_by('-listen')
 
 
 class Track(SlugMixin, models.Model):
@@ -50,7 +56,10 @@ class Track(SlugMixin, models.Model):
     order = models.PositiveIntegerField(default=0)
     listen = models.PositiveIntegerField(default=0)
     slug = models.CharField(max_length=100, blank=True)
+    file = models.FileField(upload_to='tracks', blank=True, null=True)
     album = models.ForeignKey(Album)
+
+    objects = TrackQuerySet.as_manager()
 
     class Meta:
         ordering = ('order', )

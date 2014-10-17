@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit"/>
+        </form>
+    </div>
     <div class="pure-g" style="width: 70%; margin: 0 auto;">
         <div class="pure-u-1">
             <h2>Features</h2>

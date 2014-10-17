@@ -1,9 +1,23 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, FormView
+from userprofiles.mixins import LoginRequiredMixin
 
 
-class LoginView(TemplateView):
+class LoginView(FormView):
+    form_class = AuthenticationForm
     template_name = 'login.html'
+    success_url = '/profile/'
+
+    def form_valid(self, form):
+        # username = form.cleaned_data['username']
+        # password = form.cleaned_data['password']
+        # user = authenticate(username=username, password=password)
+
+        login(self.request, form.user_cache)
+        
+        return super(LoginView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(LoginView, self).get_context_data(**kwargs)
@@ -23,7 +37,7 @@ class LoginView(TemplateView):
         return context
 
 
-class ProfileView(TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'profile.html'
 
     def get_context_data(self, **kwargs):
@@ -40,3 +54,6 @@ class ProfileView(TemplateView):
 
 class PerfilRedirectView(RedirectView):
     pattern_name = 'profile'
+
+
+
